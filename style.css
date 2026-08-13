@@ -33,7 +33,7 @@ button { cursor: pointer; }
 .eyebrow, .section-label { margin: 0 0 .7rem; font-size: .76rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
 .hero h1 { margin: 0; font-family: Georgia, serif; font-size: clamp(2.8rem, 9vw, 5.6rem); letter-spacing: -.04em; line-height: .95; }
 .hero__text { max-width: 610px; font-size: clamp(1rem, 3vw, 1.25rem); opacity: .9; margin: 1.5rem 0; }
-.room { display: inline-flex; border: 1px solid rgba(255,255,255,.4); border-radius: 99px; padding: .35rem .8rem; font-size: .9rem; }
+.room { display: inline-flex; align-items: center; border: 1px solid rgba(255,255,255,.4); border-radius: 99px; padding: .6rem 1rem; font-size: .9rem; }
 
 .app { width: min(calc(100% - 2rem), 900px); margin: -2.3rem auto 7rem; position: relative; z-index: 2; }
 .screen[hidden] { display: none; }
@@ -115,9 +115,10 @@ input:focus, select:focus, button:focus-visible { outline: 3px solid #9bc5b6; ou
 .nav button span { font-size: .55rem; opacity: .25; }
 .nav button.active { background: var(--mint); color: var(--green-dark); }
 .nav button.active span { opacity: 1; }
-.school-footer { margin: 0 auto 7rem; padding: 0 1rem; text-align: center; }
-.school-footer a { color: var(--green-dark); font-weight: 750; text-underline-offset: .2rem; }
-.school-footer a:hover { color: var(--green); }
+.hero-links { display: flex; align-items: center; justify-content: center; gap: .65rem; flex-wrap: wrap; }
+.school-link { display: inline-flex; align-items: center; gap: .4rem; padding: .6rem 1rem; border: 1px solid rgba(255,255,255,.55); border-radius: 99px; color: white; background: rgba(255,255,255,.1); font-weight: 750; text-decoration: none; transition: background .15s, transform .15s; }
+.school-link:hover { color: white; background: rgba(255,255,255,.2); transform: translateY(-1px); }
+.school-link span { font-size: 1.05em; }
 
 @media (max-width: 620px) {
   .intro-card { grid-template-columns: 1fr; }
