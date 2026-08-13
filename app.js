@@ -4,6 +4,10 @@ const bookingForm = document.getElementById("booking-form");
 const statusText = document.getElementById("form-status");
 const submitButton = document.getElementById("submit-button");
 const dateInput = document.getElementById("date");
+const EMAILJS_SERVICE_ID = "service_w4i13lo";
+const EMAILJS_TEMPLATE_ID = "template_0q5mj2y";
+const EMAILJS_PUBLIC_KEY = "7BOB9DwXLbs2aEOQl";
+const DEFAULT_ADMIN_EMAIL = "timurschule4@gmail.com";
 
 function getLocalDateString(date) {
   const offset = date.getTimezoneOffset();
@@ -25,6 +29,26 @@ function showScreen(id) {
   });
 
   document.getElementById(id)?.querySelector("h2")?.focus({ preventScroll: true });
+}
+
+async function notifyAdmin(appointment) {
+  if (!window.emailjs) return false;
+  let adminEmail = DEFAULT_ADMIN_EMAIL;
+  try {
+    const settings = await window.db.collection("settings").doc("notifications").get();
+    if (settings.exists && settings.data().email) adminEmail = settings.data().email;
+  } catch (error) {
+    console.warn("Benachrichtigungseinstellung konnte nicht geladen werden:", error);
+  }
+
+  await window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+    admin_email: adminEmail,
+    name: appointment.name,
+    klasse: appointment.klasse,
+    date: appointment.date,
+    pause: appointment.pause
+  }, { publicKey: EMAILJS_PUBLIC_KEY });
+  return true;
 }
 
 navigationButtons.forEach((button) => {
@@ -57,6 +81,11 @@ bookingForm.addEventListener("submit", async (event) => {
 
   try {
     await window.db.collection("termine").add(appointment);
+    try {
+      await notifyAdmin(appointment);
+    } catch (emailError) {
+      console.error("E-Mail-Benachrichtigung fehlgeschlagen:", emailError);
+    }
     bookingForm.reset();
     dateInput.min = getLocalDateString(new Date());
     statusText.textContent = "Eure Terminanfrage wurde gespeichert. Wir melden uns in der Schule bei euch.";

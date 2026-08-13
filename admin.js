@@ -14,6 +14,9 @@ const appointmentCount = document.getElementById("appointment-count");
 const modal = document.getElementById("day-modal");
 const modalTitle = document.getElementById("modal-title");
 const modalList = document.getElementById("modal-list");
+const notificationForm = document.getElementById("notification-form");
+const notificationEmail = document.getElementById("notification-email");
+const notificationStatus = document.getElementById("notification-status");
 
 function showStatus(element, message, type = "") {
   element.textContent = message;
@@ -73,6 +76,18 @@ function loadAppointments() {
     console.error("Termine konnten nicht geladen werden:", error);
     showStatus(calendarStatus, "Die Termine konnten nicht geladen werden. Prüft bitte die Firestore-Berechtigungen.", "error");
   });
+}
+
+async function loadNotificationSettings() {
+  try {
+    const settings = await window.db.collection("settings").doc("notifications").get();
+    notificationEmail.value = settings.exists && settings.data().email
+      ? settings.data().email
+      : "timurschule4@gmail.com";
+  } catch (error) {
+    console.error("E-Mail-Einstellung konnte nicht geladen werden:", error);
+    showStatus(notificationStatus, "Die E-Mail-Einstellung konnte nicht geladen werden.", "error");
+  }
 }
 
 function createAppointmentCard(appointment) {
@@ -161,6 +176,22 @@ googleLoginButton.addEventListener("click", async () => {
 });
 
 logoutButton.addEventListener("click", () => window.auth.signOut());
+notificationForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const email = notificationEmail.value.trim().toLowerCase();
+  if (!notificationEmail.reportValidity()) return;
+  const button = notificationForm.querySelector("button");
+  button.disabled = true;
+  try {
+    await window.db.collection("settings").doc("notifications").set({ email });
+    showStatus(notificationStatus, "Die Empfängeradresse wurde gespeichert.", "success");
+  } catch (error) {
+    console.error("E-Mail-Einstellung konnte nicht gespeichert werden:", error);
+    showStatus(notificationStatus, "Die Empfängeradresse konnte nicht gespeichert werden.", "error");
+  } finally {
+    button.disabled = false;
+  }
+});
 document.getElementById("close-modal-button").addEventListener("click", closeModal);
 modal.addEventListener("click", (event) => { if (event.target === modal) closeModal(); });
 document.addEventListener("keydown", (event) => { if (event.key === "Escape" && !modal.classList.contains("hidden")) closeModal(); });
@@ -173,6 +204,7 @@ if (!window.auth || !window.db || typeof FullCalendar === "undefined") {
     if (user) {
       showStatus(authStatus, "");
       loadAppointments();
+      loadNotificationSettings();
     } else {
       if (unsubscribeAppointments) unsubscribeAppointments();
       if (calendar) calendar.destroy();

@@ -12,7 +12,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js" defer></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js" defer></script>
   <script src="firebase.js?v=3" defer></script>
-  <script src="admin.js?v=3" defer></script>
+  <script src="admin.js?v=5" defer></script>
 </head>
 <body class="admin-page">
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
@@ -45,6 +45,21 @@
     </section>
 
     <section id="calendar-panel" class="hidden" aria-labelledby="calendar-title">
+      <div class="card notification-settings">
+        <div>
+          <p class="section-label">E-Mail-Benachrichtigung</p>
+          <h2>Empfänger ändern</h2>
+          <p>An diese Adresse wird bei jeder neuen Buchung eine Nachricht gesendet.</p>
+        </div>
+        <form id="notification-form" class="notification-form">
+          <label for="notification-email">Admin-E-Mail-Adresse</label>
+          <div class="inline-field">
+            <input id="notification-email" type="email" required value="timurschule4@gmail.com">
+            <button class="btn primary compact" type="submit">Speichern</button>
+          </div>
+          <p id="notification-status" class="form-status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
       <div class="calendar-heading">
         <div>
           <p class="section-label">Übersicht</p>
