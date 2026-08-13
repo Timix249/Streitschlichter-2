@@ -49,8 +49,7 @@ bookingForm.addEventListener("submit", async (event) => {
     name: String(data.get("name")).trim(),
     klasse: String(data.get("klasse")).trim(),
     date: String(data.get("date")),
-    pause: String(data.get("pause")),
-    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    pause: String(data.get("pause"))
   };
 
   submitButton.disabled = true;
@@ -64,7 +63,9 @@ bookingForm.addEventListener("submit", async (event) => {
     statusText.classList.add("success");
   } catch (error) {
     console.error("Termin konnte nicht gespeichert werden:", error);
-    statusText.textContent = "Das Speichern hat leider nicht funktioniert. Bitte versucht es später erneut oder kommt direkt in Raum 008 vorbei.";
+    statusText.textContent = error?.code === "permission-denied"
+      ? "Firebase erlaubt das Speichern noch nicht. Die Firestore-Regeln müssen Schreibzugriff auf Termine erlauben."
+      : "Das Speichern hat leider nicht funktioniert. Bitte versucht es später erneut oder kommt direkt in Raum 008 vorbei.";
     statusText.classList.add("error");
   } finally {
     submitButton.disabled = false;
