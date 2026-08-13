@@ -115,6 +115,9 @@ input:focus, select:focus, button:focus-visible { outline: 3px solid #9bc5b6; ou
 .nav button span { font-size: .55rem; opacity: .25; }
 .nav button.active { background: var(--mint); color: var(--green-dark); }
 .nav button.active span { opacity: 1; }
+.school-footer { margin: 0 auto 7rem; padding: 0 1rem; text-align: center; }
+.school-footer a { color: var(--green-dark); font-weight: 750; text-underline-offset: .2rem; }
+.school-footer a:hover { color: var(--green); }
 
 @media (max-width: 620px) {
   .intro-card { grid-template-columns: 1fr; }
