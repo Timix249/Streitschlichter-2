@@ -185,7 +185,7 @@ notificationForm.addEventListener("submit", async (event) => {
   const button = notificationForm.querySelector("button");
   button.disabled = true;
   try {
-    await window.db.collection("settings").doc("notifications").set({ email });
+    await window.db.collection("settings").doc("notifications").set({ email }, { merge: true });
     showStatus(notificationStatus, "Die Empfängeradresse wurde gespeichert.", "success");
   } catch (error) {
     console.error("E-Mail-Einstellung konnte nicht gespeichert werden:", error);
@@ -215,7 +215,8 @@ if (!window.auth || !window.db || typeof FullCalendar === "undefined") {
     if (allowed) {
       showStatus(authStatus, "");
       loadAppointments();
-      loadNotificationSettings();
+      notificationForm.classList.toggle("hidden", currentRole !== "owner");
+      if (currentRole === "owner") loadNotificationSettings();
     } else {
       if (user) { showStatus(authStatus, "Dieses Konto ist nicht freigeschaltet.", "error"); await window.auth.signOut(); }
       if (unsubscribeAppointments) unsubscribeAppointments();
