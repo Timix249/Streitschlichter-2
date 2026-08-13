@@ -70,6 +70,39 @@ input:focus, select:focus, button:focus-visible { outline: 3px solid #9bc5b6; ou
 .form-status { min-height: 1.5rem; margin: .8rem 0 0; font-weight: 650; }
 .form-status.error { color: var(--danger); }
 .form-status.success { color: var(--green); }
+.hidden { display: none !important; }
+
+/* ADMIN */
+.admin-page { background: #edf2ef; }
+.admin-header { max-width: 1180px; margin: 0 auto; padding: 2.2rem 1rem 1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.admin-header h1 { margin: 0; font: clamp(2rem, 5vw, 3.4rem)/1 Georgia, serif; }
+.admin-header p:last-child { color: var(--muted); }
+.admin-header .eyebrow { color: var(--green); }
+.admin-app { width: min(calc(100% - 2rem), 1180px); margin: 1rem auto 4rem; }
+.login-card { max-width: 470px; margin: 2rem auto; padding: clamp(1.4rem, 5vw, 2.2rem); }
+.secondary { background: #e4ebe7; color: var(--green-dark); margin-top: .7rem; }
+.secondary:hover { background: #d6e2dc; }
+.compact { width: auto; margin: 0; padding-inline: 1.2rem; }
+.calendar-heading { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+.calendar-heading h2 { margin-bottom: 0; }
+.count-badge { margin: 0; padding: .4rem .75rem; border-radius: 99px; background: var(--mint); color: var(--green-dark); font-weight: 800; font-size: .85rem; }
+.calendar-card { padding: clamp(.7rem, 3vw, 1.5rem); overflow-x: auto; }
+.fc { min-width: 680px; }
+.fc .fc-button-primary { background: var(--green); border-color: var(--green); }
+.fc .fc-button-primary:hover { background: var(--green-dark); border-color: var(--green-dark); }
+.fc .fc-daygrid-event { cursor: pointer; }
+.modal { position: fixed; inset: 0; z-index: 30; display: grid; place-items: center; padding: 1rem; background: rgba(13, 31, 26, .64); backdrop-filter: blur(4px); }
+.modal-box { width: min(100%, 600px); max-height: min(85vh, 760px); overflow-y: auto; padding: clamp(1.2rem, 4vw, 2rem); border-radius: 1.3rem; background: var(--paper); box-shadow: 0 30px 80px rgba(0,0,0,.28); }
+.modal-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.icon-button { width: 2.5rem; height: 2.5rem; border: 0; border-radius: 50%; background: #e8eeeb; color: var(--ink); font-size: 1.7rem; line-height: 1; }
+.appointment-list { display: grid; gap: .7rem; margin-top: 1rem; }
+.appointment-card { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 1rem; border: 1px solid var(--line); border-radius: .9rem; }
+.appointment-card h3, .appointment-card p { margin: 0; }
+.appointment-card p { color: var(--muted); font-size: .9rem; }
+.delete-button { border: 1px solid #d7aaa6; border-radius: .65rem; padding: .55rem .75rem; background: #fff2f1; color: var(--danger); font-weight: 800; }
+.delete-button:hover { background: #f9dfdc; }
+.delete-button:disabled { opacity: .6; cursor: wait; }
+.empty-state { padding: 1rem; border-radius: .8rem; background: #eef2ef; color: var(--muted); }
 
 .nav { position: fixed; z-index: 10; left: 50%; bottom: max(1rem, env(safe-area-inset-bottom)); transform: translateX(-50%); width: min(calc(100% - 2rem), 440px); display: grid; grid-template-columns: repeat(3, 1fr); gap: .35rem; padding: .45rem; border: 1px solid rgba(49,91,79,.12); border-radius: 1.2rem; background: rgba(255,253,248,.94); box-shadow: 0 18px 50px rgba(24,49,42,.2); backdrop-filter: blur(16px); }
 .nav button { display: grid; place-items: center; gap: .1rem; border: 0; border-radius: .85rem; padding: .5rem; background: transparent; color: var(--muted); font-size: .8rem; font-weight: 750; }
@@ -81,5 +114,8 @@ input:focus, select:focus, button:focus-visible { outline: 3px solid #9bc5b6; ou
   .intro-card { grid-template-columns: 1fr; }
   .steps, .team-grid, .field-row { grid-template-columns: 1fr; }
   .hero { padding-top: 3rem; }
+  .admin-header { align-items: flex-start; }
+  .calendar-heading { align-items: flex-start; flex-direction: column; }
+  .appointment-card { align-items: flex-start; flex-direction: column; }
 }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }

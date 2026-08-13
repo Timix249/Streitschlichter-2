@@ -1,97 +1,183 @@
 let calendar;
+let unsubscribeAppointments;
+let currentAppointments = [];
 
-function login(){
+const loginPanel = document.getElementById("login-panel");
+const calendarPanel = document.getElementById("calendar-panel");
+const loginForm = document.getElementById("login-form");
+const loginButton = document.getElementById("login-button");
+const googleLoginButton = document.getElementById("google-login-button");
+const logoutButton = document.getElementById("logout-button");
+const authStatus = document.getElementById("auth-status");
+const calendarStatus = document.getElementById("calendar-status");
+const appointmentCount = document.getElementById("appointment-count");
+const modal = document.getElementById("day-modal");
+const modalTitle = document.getElementById("modal-title");
+const modalList = document.getElementById("modal-list");
 
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  auth.signInWithEmailAndPassword(email, password)
-    .then(()=> loadData())
-    .catch(err=> alert(err.message));
+function showStatus(element, message, type = "") {
+  element.textContent = message;
+  element.className = `form-status ${type}`.trim();
 }
 
-function googleLogin(){
-
-  const provider = new firebase.auth.GoogleAuthProvider();
-
-  auth.signInWithPopup(provider)
-    .then(()=> loadData())
-    .catch(err=> alert(err.message));
+function formatAuthError(error) {
+  const messages = {
+    "auth/invalid-credential": "E-Mail-Adresse oder Passwort ist falsch.",
+    "auth/invalid-email": "Die E-Mail-Adresse ist ungültig.",
+    "auth/popup-closed-by-user": "Die Google-Anmeldung wurde geschlossen.",
+    "auth/popup-blocked": "Das Anmeldefenster wurde vom Browser blockiert.",
+    "auth/too-many-requests": "Zu viele Anmeldeversuche. Bitte später erneut versuchen."
+  };
+  return messages[error?.code] || "Die Anmeldung ist fehlgeschlagen. Bitte versucht es erneut.";
 }
 
-function loadData(){
+function setLoggedIn(isLoggedIn) {
+  loginPanel.classList.toggle("hidden", isLoggedIn);
+  calendarPanel.classList.toggle("hidden", !isLoggedIn);
+  logoutButton.classList.toggle("hidden", !isLoggedIn);
+}
 
-  db.collection("termine").onSnapshot(snapshot=>{
+function renderCalendar(appointments) {
+  const events = appointments.map(({ id, ...appointment }) => ({
+    id,
+    title: `${appointment.name} · ${appointment.pause}`,
+    start: appointment.date,
+    allDay: true
+  }));
 
-    const events = [];
+  if (calendar) calendar.destroy();
+  calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
+    initialView: "dayGridMonth",
+    locale: "de",
+    firstDay: 1,
+    height: "auto",
+    buttonText: { today: "Heute" },
+    events,
+    dateClick: (info) => openDay(info.dateStr),
+    eventClick: (info) => openDay(info.event.startStr.slice(0, 10))
+  });
+  calendar.render();
+}
 
-    snapshot.forEach(doc=>{
-      const d = doc.data();
+function loadAppointments() {
+  if (unsubscribeAppointments) unsubscribeAppointments();
+  showStatus(calendarStatus, "Termine werden geladen …");
 
-      events.push({
-        title: d.name + " (" + d.pause + ")",
-        start: d.date
-      });
-    });
-
-    renderCalendar(events);
+  unsubscribeAppointments = window.db.collection("termine").onSnapshot((snapshot) => {
+    currentAppointments = snapshot.docs.map((document) => ({ id: document.id, ...document.data() }));
+    currentAppointments.sort((a, b) => `${a.date}${a.pause}`.localeCompare(`${b.date}${b.pause}`));
+    appointmentCount.textContent = `${currentAppointments.length} ${currentAppointments.length === 1 ? "Termin" : "Termine"}`;
+    renderCalendar(currentAppointments);
+    showStatus(calendarStatus, "");
+  }, (error) => {
+    console.error("Termine konnten nicht geladen werden:", error);
+    showStatus(calendarStatus, "Die Termine konnten nicht geladen werden. Prüft bitte die Firestore-Berechtigungen.", "error");
   });
 }
 
-function renderCalendar(events){
+function createAppointmentCard(appointment) {
+  const article = document.createElement("article");
+  article.className = "appointment-card";
 
-  if(calendar) calendar.destroy();
+  const details = document.createElement("div");
+  const name = document.createElement("h3");
+  name.textContent = appointment.name || "Ohne Namen";
+  const meta = document.createElement("p");
+  meta.textContent = `Klasse ${appointment.klasse || "–"} · ${appointment.pause || "Keine Pause"}`;
+  details.append(name, meta);
 
-  calendar = new FullCalendar.Calendar(
-    document.getElementById("calendar"),
-    {
-      initialView: 'dayGridMonth',
-      locale: 'de',
-      events: events,
+  const deleteButton = document.createElement("button");
+  deleteButton.type = "button";
+  deleteButton.className = "delete-button";
+  deleteButton.textContent = "Löschen";
+  deleteButton.setAttribute("aria-label", `Termin von ${appointment.name || "unbekannt"} löschen`);
+  deleteButton.addEventListener("click", () => deleteAppointment(appointment, deleteButton));
 
-      dateClick: function(info) {
-        openDay(info.dateStr);
-      }
+  article.append(details, deleteButton);
+  return article;
+}
+
+function openDay(date) {
+  const appointments = currentAppointments.filter((appointment) => appointment.date === date);
+  modalTitle.textContent = new Intl.DateTimeFormat("de-DE", { dateStyle: "long" }).format(new Date(`${date}T12:00:00`));
+  modalList.replaceChildren();
+
+  if (!appointments.length) {
+    const empty = document.createElement("p");
+    empty.className = "empty-state";
+    empty.textContent = "Für diesen Tag gibt es keine Termine.";
+    modalList.append(empty);
+  } else {
+    appointments.forEach((appointment) => modalList.append(createAppointmentCard(appointment)));
+  }
+
+  modal.classList.remove("hidden");
+  document.getElementById("close-modal-button").focus();
+}
+
+function closeModal() {
+  modal.classList.add("hidden");
+}
+
+async function deleteAppointment(appointment, button) {
+  const confirmed = window.confirm(`Termin von ${appointment.name || "unbekannt"} am ${appointment.date} wirklich löschen?`);
+  if (!confirmed) return;
+
+  button.disabled = true;
+  button.textContent = "Wird gelöscht …";
+  try {
+    await window.db.collection("termine").doc(appointment.id).delete();
+    modalList.querySelector(`[aria-label="${CSS.escape(button.getAttribute("aria-label"))}"]`)?.closest("article")?.remove();
+    if (!modalList.children.length) closeModal();
+    showStatus(calendarStatus, "Der Termin wurde gelöscht.", "success");
+  } catch (error) {
+    console.error("Termin konnte nicht gelöscht werden:", error);
+    button.disabled = false;
+    button.textContent = "Löschen";
+    showStatus(calendarStatus, "Der Termin konnte nicht gelöscht werden. Prüft bitte die Firestore-Berechtigungen.", "error");
+  }
+}
+
+loginForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  loginButton.disabled = true;
+  showStatus(authStatus, "Anmeldung läuft …");
+  try {
+    await window.auth.signInWithEmailAndPassword(document.getElementById("email").value.trim(), document.getElementById("password").value);
+    loginForm.reset();
+  } catch (error) {
+    showStatus(authStatus, formatAuthError(error), "error");
+  } finally {
+    loginButton.disabled = false;
+  }
+});
+
+googleLoginButton.addEventListener("click", async () => {
+  try {
+    await window.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+  } catch (error) {
+    showStatus(authStatus, formatAuthError(error), "error");
+  }
+});
+
+logoutButton.addEventListener("click", () => window.auth.signOut());
+document.getElementById("close-modal-button").addEventListener("click", closeModal);
+modal.addEventListener("click", (event) => { if (event.target === modal) closeModal(); });
+document.addEventListener("keydown", (event) => { if (event.key === "Escape" && !modal.classList.contains("hidden")) closeModal(); });
+
+if (!window.auth || !window.db || typeof FullCalendar === "undefined") {
+  showStatus(authStatus, "Die Admin-Funktionen konnten nicht geladen werden. Bitte ladet die Seite neu.", "error");
+} else {
+  window.auth.onAuthStateChanged((user) => {
+    setLoggedIn(Boolean(user));
+    if (user) {
+      showStatus(authStatus, "");
+      loadAppointments();
+    } else {
+      if (unsubscribeAppointments) unsubscribeAppointments();
+      if (calendar) calendar.destroy();
+      currentAppointments = [];
+      closeModal();
     }
-  );
-
-  calendar.render();
-}
-function openDay(date){
-
-  document.getElementById("modalDate").innerText = date;
-  const list = document.getElementById("modalList");
-  list.innerHTML = "";
-
-  db.collection("termine")
-    .where("date", "==", date)
-    .get()
-    .then(snapshot=>{
-
-      if(snapshot.empty){
-        list.innerHTML = "<p>Keine Termine</p>";
-        return;
-      }
-
-      snapshot.forEach(doc=>{
-        const d = doc.data();
-
-        const div = document.createElement("div");
-        div.innerHTML = `
-          <b>${d.name}</b><br>
-          Klasse: ${d.klasse}<br>
-          ${d.pause}
-          <hr>
-        `;
-
-        list.appendChild(div);
-      });
-
-    });
-
-  document.getElementById("dayModal").classList.remove("hidden");
-}
-
-function closeModal(){
-  document.getElementById("dayModal").classList.add("hidden");
+  });
 }
