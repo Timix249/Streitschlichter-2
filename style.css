@@ -112,7 +112,7 @@ input:focus, select:focus, button:focus-visible { outline: 3px solid #9bc5b6; ou
 
 .nav { position: fixed; z-index: 10; left: 50%; bottom: max(1rem, env(safe-area-inset-bottom)); transform: translateX(-50%); width: min(calc(100% - 2rem), 440px); display: grid; grid-template-columns: repeat(3, 1fr); gap: .35rem; padding: .45rem; border: 1px solid rgba(49,91,79,.12); border-radius: 1.2rem; background: rgba(255,253,248,.94); box-shadow: 0 18px 50px rgba(24,49,42,.2); backdrop-filter: blur(16px); }
 .nav button { display: grid; place-items: center; gap: .1rem; border: 0; border-radius: .85rem; padding: .5rem; background: transparent; color: var(--muted); font-size: .8rem; font-weight: 750; }
-.nav button img { width: 1.25rem; height: 1.25rem; object-fit: contain; opacity: .38; transition: opacity .15s, transform .15s; }
+.nav button img { display: block; width: 12px !important; height: 12px !important; min-width: 12px; max-width: 12px; object-fit: contain; opacity: .38; transition: opacity .15s, transform .15s; }
 .nav button.active { background: var(--mint); color: var(--green-dark); }
 .nav button.active img { opacity: 1; transform: scale(1.08); }
 .hero-links { width: fit-content; display: flex; align-items: center; justify-content: center; margin: 0 auto; overflow: hidden; border: 1px solid rgba(255,255,255,.5); border-radius: 99px; background: rgba(0,0,0,.06); }
