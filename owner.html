@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Eigentümer · Streitschlichter</title>
+  <link rel="stylesheet" href="style.css?v=7">
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" defer></script>
+  <script src="firebase.js?v=3" defer></script>
+  <script src="owner.js?v=7" defer></script>
+</head>
+<body class="admin-page">
+  <header class="admin-header owner-header">
+    <div><p class="eyebrow">Nur für Eigentümer</p><h1>Systemverwaltung</h1><p>Streitschlichter · zentrale Einstellungen</p></div>
+    <div class="header-actions"><a class="btn secondary compact" href="admin.html">Admin</a><button id="owner-logout" class="btn secondary compact hidden">Abmelden</button></div>
+  </header>
+  <main class="admin-app">
+    <section id="owner-login" class="card login-card">
+      <p class="section-label">Geschützter Zugang</p><h2>Als Eigentümer anmelden</h2>
+      <button id="owner-google-login" class="btn primary">Mit Google anmelden</button>
+      <p id="owner-auth-status" class="form-status" role="status"></p>
+    </section>
+
+    <div id="owner-dashboard" class="hidden">
+      <nav class="owner-nav" aria-label="Eigentümerbereiche">
+        <a href="#overview">Übersicht</a><a href="#admins">Administratoren</a><a href="#booking">Termine</a><a href="#email">E-Mail</a><a href="#content">Inhalte</a><a href="#privacy">Datenschutz</a><a href="#status">Systemstatus</a>
+      </nav>
+
+      <section id="overview" class="owner-section"><div class="section-heading"><p class="section-label">Dashboard</p><h2>Übersicht</h2></div>
+        <div class="stats-grid"><article><strong id="stat-all">0</strong><span>Alle Termine</span></article><article><strong id="stat-week">0</strong><span>Diese Woche</span></article><article><strong id="stat-first">0</strong><span>1. Pause</span></article><article><strong id="stat-second">0</strong><span>2. Pause</span></article><article><strong id="stat-mails">0</strong><span>E-Mails gesendet</span></article></div>
+        <div class="card owner-card"><h3>Letzte Aktivitäten</h3><div id="activity-list" class="activity-list"></div></div>
+      </section>
+
+      <section id="admins" class="owner-section"><div class="section-heading"><p class="section-label">Zugänge</p><h2>Administratoren</h2></div>
+        <form id="admin-form" class="card owner-form"><div class="field"><label for="admin-email">E-Mail</label><input id="admin-email" type="email" required></div><div class="field"><label for="admin-role">Rolle</label><select id="admin-role"><option value="admin">Admin</option><option value="viewer">Nur Lesen</option><option value="owner">Eigentümer</option></select></div><button class="btn primary compact">Hinzufügen</button></form>
+        <div id="admin-list" class="management-list"></div>
+      </section>
+
+      <section id="booking" class="owner-section"><div class="section-heading"><p class="section-label">Buchungsregeln</p><h2>Termin-Einstellungen</h2></div>
+        <form id="booking-settings-form" class="card owner-form grid-form">
+          <div class="field"><label for="pauses">Pausen (kommagetrennt)</label><input id="pauses" value="1. Pause, 2. Pause"></div>
+          <div class="field"><label for="max-per-slot">Maximal pro Pause</label><input id="max-per-slot" type="number" min="1" max="50" value="5"></div>
+          <div class="field"><label for="advance-weeks">Wochen im Voraus</label><input id="advance-weeks" type="number" min="1" max="52" value="8"></div>
+          <fieldset class="weekday-field"><legend>Erlaubte Wochentage</legend><label><input type="checkbox" name="weekday" value="1" checked> Mo</label><label><input type="checkbox" name="weekday" value="2" checked> Di</label><label><input type="checkbox" name="weekday" value="3" checked> Mi</label><label><input type="checkbox" name="weekday" value="4" checked> Do</label><label><input type="checkbox" name="weekday" value="5" checked> Fr</label></fieldset>
+          <div class="field full"><label for="blocked-dates">Ferien/Sperrtage (YYYY-MM-DD, kommagetrennt)</label><textarea id="blocked-dates" rows="3"></textarea></div><button class="btn primary compact">Buchungsregeln speichern</button><p id="booking-settings-status" class="form-status"></p>
+        </form>
+      </section>
+
+      <section id="email" class="owner-section"><div class="section-heading"><p class="section-label">Benachrichtigungen</p><h2>E-Mail-Einstellungen</h2></div>
+        <form id="email-settings-form" class="card owner-form grid-form"><label class="switch-row full"><input id="email-enabled" type="checkbox" checked> E-Mail-Benachrichtigungen aktiv</label><div class="field"><label for="owner-notification-email">Empfänger</label><input id="owner-notification-email" type="email" value="timurschule4@gmail.com" required></div><div class="field"><label for="email-subject">Betreff</label><input id="email-subject" value="Neuer Streitschlichter-Termin"></div><div class="field full"><label for="email-text">Zusatztext</label><textarea id="email-text" rows="3">Ein neuer Termin wurde gebucht.</textarea></div><div class="button-row full"><button class="btn primary compact">Speichern</button><button id="test-email" class="btn secondary compact" type="button">Test-E-Mail senden</button></div><p id="email-settings-status" class="form-status full"></p></form>
+        <div class="card quota-card"><strong id="email-quota">0 / 200</strong><span>intern gezählte E-Mails in diesem Monat</span></div>
+      </section>
+
+      <section id="content" class="owner-section"><div class="section-heading"><p class="section-label">Öffentliche Website</p><h2>Website-Inhalte</h2></div>
+        <form id="content-form" class="card owner-form grid-form"><div class="field"><label for="room-text">Raum</label><input id="room-text" value="Raum 008"></div><div class="field full"><label for="info-text">Informationstext</label><textarea id="info-text" rows="3"></textarea></div><div class="field full"><label for="emergency-text">Notfallhinweis</label><textarea id="emergency-text" rows="3"></textarea></div><div class="field full"><label for="team-data">Teammitglieder – je Zeile: Name | Rolle | Bild-URL</label><textarea id="team-data" rows="5"></textarea></div><button class="btn primary compact">Inhalte speichern</button><p id="content-status" class="form-status"></p></form>
+      </section>
+
+      <section id="privacy" class="owner-section"><div class="section-heading"><p class="section-label">Daten</p><h2>Daten und Datenschutz</h2></div>
+        <div class="card owner-form"><div class="field"><label for="retention-days">Aufbewahrungsdauer in Tagen</label><input id="retention-days" type="number" min="1" max="3650" value="90"></div><div class="button-row"><button id="save-retention" class="btn primary compact">Speichern & alte Termine löschen</button><button id="csv-export" class="btn secondary compact">CSV exportieren</button><button id="delete-all" class="btn danger compact">Alle Termine löschen</button></div><p id="privacy-status" class="form-status"></p><small>Automatische Bereinigung erfolgt bei jedem Öffnen dieser Eigentümer-Seite.</small></div>
+      </section>
+
+      <section id="status" class="owner-section"><div class="section-heading"><p class="section-label">Diagnose</p><h2>Systemstatus</h2></div><div class="status-grid"><article><span id="firebase-dot" class="status-dot"></span><strong>Firebase</strong><small id="firebase-status">Prüfung …</small></article><article><span id="email-dot" class="status-dot"></span><strong>EmailJS</strong><small id="email-status">Prüfung …</small></article><article><strong>Letzte E-Mail</strong><small id="last-email">–</small></article><article><strong>Letzter Fehler</strong><small id="last-error">–</small></article><article><strong>GitHub Pages</strong><small>Version 7</small></article></div></section>
+    </div>
+  </main>
+</body></html>

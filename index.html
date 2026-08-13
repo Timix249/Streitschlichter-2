@@ -12,7 +12,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" defer></script>
   <script src="firebase.js?v=2" defer></script>
-  <script src="app.js?v=6" defer></script>
+  <script src="app.js?v=7" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
@@ -22,7 +22,7 @@
       <p class="eyebrow">Vertraulich · Fair · Gemeinsam</p>
       <h1>Streitschlichter</h1>
       <p class="hero__text">Wir helfen euch, Konflikte ruhig zu klären und gemeinsam eine Lösung zu finden.</p>
-      <span class="room">Raum 008</span>
+      <span id="public-room" class="room">Raum 008</span>
     </div>
   </header>
 
@@ -33,7 +33,7 @@
         <div>
           <p class="section-label">So unterstützen wir euch</p>
           <h2 id="info-title">Ein sicherer Ort für faire Gespräche</h2>
-          <p>Bei uns könnt ihr erzählen, was passiert ist. Wir hören allen Seiten zu und helfen euch, eine Lösung zu finden, mit der ihr weiterkommt.</p>
+          <p id="public-info">Bei uns könnt ihr erzählen, was passiert ist. Wir hören allen Seiten zu und helfen euch, eine Lösung zu finden, mit der ihr weiterkommt.</p>
         </div>
       </div>
       <div class="steps" aria-label="Ablauf der Streitschlichtung">
@@ -41,7 +41,7 @@
         <article><span>2</span><h3>Verstehen</h3><p>Wir klären gemeinsam, was euch wichtig ist.</p></article>
         <article><span>3</span><h3>Lösen</h3><p>Ihr vereinbart eine faire, konkrete Lösung.</p></article>
       </div>
-      <p class="notice"><strong>Wichtig:</strong> Bei akuter Gefahr oder Gewalt wendet euch sofort an eine Lehrkraft oder das Sekretariat.</p>
+      <p class="notice"><strong>Wichtig:</strong> <span id="public-emergency">Bei akuter Gefahr oder Gewalt wendet euch sofort an eine Lehrkraft oder das Sekretariat.</span></p>
     </section>
 
     <section id="photos" class="screen" aria-labelledby="photos-title" hidden>
@@ -50,7 +50,7 @@
         <h2 id="photos-title">Euer Streitschlichter-Team</h2>
         <p>Hier können später Fotos und Namen des aktuellen Teams ergänzt werden.</p>
       </div>
-      <div class="team-grid">
+      <div id="public-team" class="team-grid">
         <article class="team-card"><div class="avatar" aria-hidden="true">S</div><h3>Schülerteam</h3><p>Ausgebildete Streitschlichterinnen und Streitschlichter</p></article>
         <article class="team-card"><div class="avatar avatar--warm" aria-hidden="true">B</div><h3>Begleitung</h3><p>Unterstützung durch das betreuende Schulteam</p></article>
       </div>
