@@ -1,6 +1,7 @@
 let calendar;
 let unsubscribeAppointments;
 let currentAppointments = [];
+let currentRole = "viewer";
 
 const loginPanel = document.getElementById("login-panel");
 const calendarPanel = document.getElementById("calendar-panel");
@@ -106,6 +107,7 @@ function createAppointmentCard(appointment) {
   deleteButton.className = "delete-button";
   deleteButton.textContent = "Löschen";
   deleteButton.setAttribute("aria-label", `Termin von ${appointment.name || "unbekannt"} löschen`);
+  deleteButton.hidden = currentRole === "viewer";
   deleteButton.addEventListener("click", () => deleteAppointment(appointment, deleteButton));
 
   article.append(details, deleteButton);
@@ -199,13 +201,23 @@ document.addEventListener("keydown", (event) => { if (event.key === "Escape" && 
 if (!window.auth || !window.db || typeof FullCalendar === "undefined") {
   showStatus(authStatus, "Die Admin-Funktionen konnten nicht geladen werden. Bitte ladet die Seite neu.", "error");
 } else {
-  window.auth.onAuthStateChanged((user) => {
-    setLoggedIn(Boolean(user));
+  window.auth.onAuthStateChanged(async (user) => {
+    let allowed = false;
     if (user) {
+      if (user.email?.toLowerCase() === "timurschule4@gmail.com") { currentRole = "owner"; allowed = true; }
+      else {
+        const access = await window.db.collection("admins").doc(user.email.toLowerCase()).get().catch(()=>null);
+        if (access?.exists) { currentRole = access.data().role; allowed = ["owner","admin","viewer"].includes(currentRole); }
+      }
+      if (allowed) await window.db.collection("admins").doc(user.email.toLowerCase()).set({lastLogin:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).catch(()=>{});
+    }
+    setLoggedIn(allowed);
+    if (allowed) {
       showStatus(authStatus, "");
       loadAppointments();
       loadNotificationSettings();
     } else {
+      if (user) { showStatus(authStatus, "Dieses Konto ist nicht freigeschaltet.", "error"); await window.auth.signOut(); }
       if (unsubscribeAppointments) unsubscribeAppointments();
       if (calendar) calendar.destroy();
       currentAppointments = [];
