@@ -1,15 +1,10 @@
 {
-  "name": "Streitschlichter",
-  "short_name": "Schlicht",
-  "start_url": "./index.html",
+  "name": "Streitschlichter · Raum 008",
+  "short_name": "Schlichtung",
+  "start_url": "./",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#000000",
-  "icons": [
-    {
-      "src": "icon.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
+  "background_color": "#f7f4ec",
+  "theme_color": "#315b4f",
+  "lang": "de",
+  "icons": [{ "src": "icon.png", "sizes": "512x512", "type": "image/png" }]
 }

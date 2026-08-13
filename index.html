@@ -1,68 +1,98 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="de">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Streitschlichter</title>
-
-<link rel="stylesheet" href="style.css">
-<link rel="manifest" href="manifest.json">
-
-
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#315b4f">
+  <meta name="description" content="Schulische Streitschlichtung in Raum 008 – Informationen und Terminbuchung.">
+  <title>Streitschlichter · Raum 008</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js" defer></script>
+  <script src="firebase.js" defer></script>
+  <script src="app.js" defer></script>
 </head>
-
 <body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
 
-<div class="app">
+  <header class="hero">
+    <div class="hero__inner">
+      <p class="eyebrow">Vertraulich · Fair · Gemeinsam</p>
+      <h1>Streitschlichter</h1>
+      <p class="hero__text">Wir helfen euch, Konflikte ruhig zu klären und gemeinsam eine Lösung zu finden.</p>
+      <span class="room">Raum 008</span>
+    </div>
+  </header>
 
-<h1>Streitschlichter</h1>
-<p class="subtitle">Raum 008</p>
+  <main id="main" class="app">
+    <section id="info" class="screen active" aria-labelledby="info-title">
+      <div class="card intro-card">
+        <div class="icon" aria-hidden="true">🤝</div>
+        <div>
+          <p class="section-label">So unterstützen wir euch</p>
+          <h2 id="info-title">Ein sicherer Ort für faire Gespräche</h2>
+          <p>Bei uns könnt ihr erzählen, was passiert ist. Wir hören allen Seiten zu und helfen euch, eine Lösung zu finden, mit der ihr weiterkommt.</p>
+        </div>
+      </div>
+      <div class="steps" aria-label="Ablauf der Streitschlichtung">
+        <article><span>1</span><h3>Ankommen</h3><p>Ihr schildert den Konflikt – ohne Unterbrechungen.</p></article>
+        <article><span>2</span><h3>Verstehen</h3><p>Wir klären gemeinsam, was euch wichtig ist.</p></article>
+        <article><span>3</span><h3>Lösen</h3><p>Ihr vereinbart eine faire, konkrete Lösung.</p></article>
+      </div>
+      <p class="notice"><strong>Wichtig:</strong> Bei akuter Gefahr oder Gewalt wendet euch sofort an eine Lehrkraft oder das Sekretariat.</p>
+    </section>
 
-<!-- SCREENS -->
+    <section id="photos" class="screen" aria-labelledby="photos-title" hidden>
+      <div class="section-heading">
+        <p class="section-label">Lernt uns kennen</p>
+        <h2 id="photos-title">Euer Streitschlichter-Team</h2>
+        <p>Hier können später Fotos und Namen des aktuellen Teams ergänzt werden.</p>
+      </div>
+      <div class="team-grid">
+        <article class="team-card"><div class="avatar" aria-hidden="true">S</div><h3>Schülerteam</h3><p>Ausgebildete Streitschlichterinnen und Streitschlichter</p></article>
+        <article class="team-card"><div class="avatar avatar--warm" aria-hidden="true">B</div><h3>Begleitung</h3><p>Unterstützung durch das betreuende Schulteam</p></article>
+      </div>
+    </section>
 
-<div id="info" class="screen active">
-  <div class="card">
-    Hier helfen wir bei Konflikten in der Schule.
-  </div>
-</div>
+    <section id="termin" class="screen" aria-labelledby="termin-title" hidden>
+      <div class="section-heading">
+        <p class="section-label">Gespräch vereinbaren</p>
+        <h2 id="termin-title">Termin buchen</h2>
+        <p>Füllt die Felder aus. Eure Angaben werden nur zur Organisation des Gesprächs genutzt.</p>
+      </div>
+      <form id="booking-form" class="card form-card">
+        <div class="field">
+          <label for="name">Vor- und Nachname</label>
+          <input id="name" name="name" autocomplete="name" required maxlength="80">
+        </div>
+        <div class="field">
+          <label for="klasse">Klasse</label>
+          <input id="klasse" name="klasse" autocomplete="off" required maxlength="20" placeholder="z. B. 7b">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="date">Datum</label>
+            <input type="date" id="date" name="date" required>
+          </div>
+          <div class="field">
+            <label for="pause">Zeitraum</label>
+            <select id="pause" name="pause" required>
+              <option value="1. Pause">1. Pause</option>
+              <option value="2. Pause">2. Pause</option>
+            </select>
+          </div>
+        </div>
+        <button id="submit-button" class="btn primary" type="submit">Termin verbindlich anfragen</button>
+        <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+  </main>
 
-<div id="photos" class="screen">
-  <div class="card photos">
-    <div class="photo"></div>
-    <div class="photo"></div>
-  </div>
-</div>
-
-<div id="termin" class="screen">
-  <div class="card">
-
-    <input id="name" placeholder="Name">
-    <input id="klasse" placeholder="Klasse">
-    <input type="date" id="date">
-
-    <select id="pause">
-      <option>1. Pause</option>
-      <option>2. Pause</option>
-    </select>
-
-    <button class="btn primary" onclick="save()">Termin buchen</button>
-
-  </div>
-</div>
-
-</div>
-
-<!-- NAVIGATION -->
-<div class="nav">
-  <button onclick="show('info')">Info</button>
-  <button onclick="show('photos')">Fotos</button>
-  <button onclick="show('termin')">Termin</button>
-</div>
-
-<script src="firebase.js"></script>
-<script src="app.js"></script>
-
+  <nav class="nav" aria-label="Hauptnavigation">
+    <button type="button" data-screen="info" class="active" aria-current="page"><span aria-hidden="true">●</span>Info</button>
+    <button type="button" data-screen="photos"><span aria-hidden="true">●</span>Team</button>
+    <button type="button" data-screen="termin"><span aria-hidden="true">●</span>Termin</button>
+  </nav>
 </body>
 </html>

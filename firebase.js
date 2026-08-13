@@ -4,7 +4,15 @@ const firebaseConfig = {
   projectId: "streitschlichter-9f634"
 };
 
-firebase.initializeApp(firebaseConfig);
+try {
+  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+  window.db = firebase.firestore();
 
-const db = firebase.firestore();
-const auth = firebase.auth();
+  // Auth wird nur auf der Admin-Seite geladen. So bleibt die öffentliche
+  // Terminseite auch ohne firebase-auth-compat fehlerfrei.
+  window.auth = typeof firebase.auth === "function" ? firebase.auth() : null;
+} catch (error) {
+  console.error("Firebase konnte nicht initialisiert werden:", error);
+  window.db = null;
+  window.auth = null;
+}
