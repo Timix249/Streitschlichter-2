@@ -1,5 +1,5 @@
-const CACHE_NAME = "streitschlichter-v3";
-const APP_SHELL = ["./", "./index.html", "./style.css", "./app.js", "./firebase.js", "./manifest.json", "./peace-symbol.png"];
+const CACHE_NAME = "streitschlichter-v4";
+const APP_SHELL = ["./", "./index.html", "./style.css", "./app.js", "./i18n.js", "./firebase.js", "./manifest.json", "./peace-symbol.png"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)));

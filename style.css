@@ -28,6 +28,10 @@ button { cursor: pointer; }
 .skip-link:focus { top: 1rem; }
 
 .hero { background: var(--green); color: white; padding: clamp(3.5rem, 10vw, 7rem) 1.25rem 5rem; position: relative; overflow: hidden; }
+.language-picker { position: absolute; z-index: 3; top: max(1rem, env(safe-area-inset-top)); right: 1rem; }
+.language-picker select { width: auto; min-height: 2.5rem; padding: .4rem 2rem .4rem .7rem; border: 1px solid rgba(255,255,255,.5); border-radius: 99px; color: white; background-color: rgba(17,67,56,.86); font-size: .85rem; font-weight: 750; backdrop-filter: blur(10px); cursor: pointer; }
+.language-picker option { color: var(--ink); background: white; }
+.sr-only { position: absolute!important; width: 1px!important; height: 1px!important; padding: 0!important; margin: -1px!important; overflow: hidden!important; clip: rect(0,0,0,0)!important; white-space: nowrap!important; border: 0!important; }
 .hero::after { content: ""; position: absolute; width: 24rem; height: 24rem; border: 1px solid rgba(255,255,255,.16); border-radius: 50%; right: -8rem; top: -11rem; box-shadow: 0 0 0 4rem rgba(255,255,255,.035), 0 0 0 8rem rgba(255,255,255,.025); }
 .hero__inner { width: min(100%, 760px); margin: auto; position: relative; z-index: 1; }
 .eyebrow, .section-label { margin: 0 0 .7rem; font-size: .76rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
