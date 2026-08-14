@@ -95,6 +95,7 @@ input:focus, select:focus, button:focus-visible { outline: 3px solid #9bc5b6; ou
 .inline-field { display: flex; gap: .65rem; margin-top: .4rem; }
 .inline-field .btn { flex: 0 0 auto; }
 .calendar-heading h2 { margin-bottom: 0; }
+.calendar-actions { display: flex; align-items: center; gap: .7rem; flex-wrap: wrap; justify-content: flex-end; }
 .count-badge { margin: 0; padding: .4rem .75rem; border-radius: 99px; background: var(--mint); color: var(--green-dark); font-weight: 800; font-size: .85rem; }
 .calendar-card { padding: clamp(.7rem, 3vw, 1.5rem); overflow-x: auto; }
 .fc { min-width: 680px; }
@@ -113,6 +114,28 @@ input:focus, select:focus, button:focus-visible { outline: 3px solid #9bc5b6; ou
 .delete-button:hover { background: #f9dfdc; }
 .delete-button:disabled { opacity: .6; cursor: wait; }
 .empty-state { padding: 1rem; border-radius: .8rem; background: #eef2ef; color: var(--muted); }
+.print-info-sheet { display: none; }
+
+@media print {
+  @page { size: A4; margin: 13mm; }
+  body.admin-page { background: white; color: #142d26; font-size: 10.5pt; line-height: 1.45; }
+  body.admin-page > :not(.print-info-sheet) { display: none !important; }
+  .print-info-sheet { display: block; }
+  .print-sheet-header { display: flex; align-items: center; gap: 15mm; padding: 8mm; margin-bottom: 7mm; border-radius: 6mm; color: white; background: #315b4f !important; print-color-adjust: exact; }
+  .print-sheet-header img { width: 25mm; height: 25mm; padding: 3mm; border-radius: 50%; background: white; object-fit: contain; }
+  .print-sheet-header p, .print-sheet-header h1 { margin: 0; }
+  .print-sheet-header h1 { font: bold 28pt Georgia, serif; }
+  .print-info-sheet h2 { margin: 0 0 2mm; font-size: 16pt; }
+  .print-info-sheet h3, .print-info-sheet p { margin: 0 0 2mm; }
+  .print-info-sheet section { margin-bottom: 6mm; break-inside: avoid; }
+  .print-steps, .print-details { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; }
+  .print-details { grid-template-columns: repeat(2, 1fr); }
+  .print-steps > div, .print-details > div { padding: 4mm; border: .4mm solid #cbdad4; border-radius: 4mm; }
+  .print-steps b { display: grid; place-items: center; width: 8mm; height: 8mm; margin-bottom: 2mm; border-radius: 50%; color: white; background: #315b4f !important; print-color-adjust: exact; }
+  .print-url { padding: 2.5mm; border-radius: 2mm; font-weight: bold; background: #e5f0eb !important; overflow-wrap: anywhere; print-color-adjust: exact; }
+  .print-emergency { padding: 4mm; margin: 3mm 0 7mm; border-left: 2mm solid #9b302b; background: #f8e8e5 !important; print-color-adjust: exact; }
+  .print-info-sheet footer { display: flex; justify-content: space-between; padding-top: 3mm; border-top: .4mm solid #cbdad4; font-weight: bold; }
+}
 
 .nav { position: fixed; z-index: 10; left: 50%; bottom: max(1rem, env(safe-area-inset-bottom)); transform: translateX(-50%); width: min(calc(100% - 2rem), 440px); display: grid; grid-template-columns: repeat(3, 1fr); gap: .35rem; padding: .45rem; border: 1px solid rgba(49,91,79,.12); border-radius: 1.2rem; background: rgba(255,253,248,.94); box-shadow: 0 18px 50px rgba(24,49,42,.2); backdrop-filter: blur(16px); }
 .nav button { display: grid; place-items: center; gap: .1rem; border: 0; border-radius: .85rem; padding: .5rem; background: transparent; color: var(--muted); font-size: .8rem; font-weight: 750; }

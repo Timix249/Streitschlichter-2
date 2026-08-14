@@ -163,6 +163,7 @@ googleLoginButton.addEventListener("click", async () => {
 });
 
 logoutButton.addEventListener("click", () => window.auth.signOut());
+document.getElementById("print-info-button").addEventListener("click", () => window.print());
 document.getElementById("close-modal-button").addEventListener("click", closeModal);
 modal.addEventListener("click", (event) => { if (event.target === modal) closeModal(); });
 document.addEventListener("keydown", (event) => { if (event.key === "Escape" && !modal.classList.contains("hidden")) closeModal(); });

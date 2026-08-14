@@ -12,7 +12,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js" defer></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js" defer></script>
   <script src="firebase.js?v=3" defer></script>
-  <script src="admin.js?v=9" defer></script>
+  <script src="admin.js?v=10" defer></script>
 </head>
 <body class="admin-page">
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
@@ -50,7 +50,10 @@
           <p class="section-label">Übersicht</p>
           <h2 id="calendar-title">Gebuchte Termine</h2>
         </div>
-        <p id="appointment-count" class="count-badge">0 Termine</p>
+        <div class="calendar-actions">
+          <p id="appointment-count" class="count-badge">0 Termine</p>
+          <button id="print-info-button" class="btn secondary compact" type="button">Informationsblatt drucken</button>
+        </div>
       </div>
       <div class="card calendar-card">
         <div id="calendar" aria-label="Terminkalender"></div>
@@ -58,6 +61,32 @@
       <p id="calendar-status" class="form-status" role="status" aria-live="polite"></p>
     </section>
   </main>
+
+  <article id="print-info-sheet" class="print-info-sheet" aria-hidden="true">
+    <header class="print-sheet-header">
+      <img src="peace-symbol.png" alt="Peace-Symbol">
+      <div><p>Realschule Germersheim</p><h1>Streitschlichter</h1><strong>Vertraulich · Fair · Gemeinsam</strong></div>
+    </header>
+    <section>
+      <h2>Wir helfen euch bei Konflikten</h2>
+      <p>Bei uns könnt ihr erzählen, was passiert ist. Wir hören allen Seiten zu und helfen euch, eine faire Lösung zu finden, mit der ihr gemeinsam weiterkommt.</p>
+    </section>
+    <section class="print-steps">
+      <div><b>1</b><h3>Ankommen</h3><p>Ihr schildert den Konflikt in Ruhe und ohne Unterbrechungen.</p></div>
+      <div><b>2</b><h3>Verstehen</h3><p>Wir klären gemeinsam, was passiert ist und was euch wichtig ist.</p></div>
+      <div><b>3</b><h3>Lösen</h3><p>Ihr vereinbart eine faire, konkrete und gemeinsame Lösung.</p></div>
+    </section>
+    <section class="print-details">
+      <div><h2>Wo und wann?</h2><p><strong>Raum:</strong> 008</p><p><strong>Zeiten:</strong> 1. Pause oder 2. Pause</p><p>Die verfügbaren Tage und Pausen werden bei der Online-Buchung angezeigt.</p></div>
+      <div><h2>Termin buchen</h2><p>Öffnet die Website, wählt „Termin“ und gebt Name, Klasse, Datum und Pause ein.</p><p class="print-url">timix249.github.io/Streitschlichter-2</p></div>
+    </section>
+    <section>
+      <h2>Was passiert mit euren Daten?</h2>
+      <p>Die Angaben werden nur zur Organisation des Gesprächs verwendet. Auf die Termine können ausschließlich freigeschaltete Administratoren zugreifen.</p>
+    </section>
+    <aside class="print-emergency"><strong>Wichtig:</strong> Bei akuter Gefahr, Gewalt oder einem Notfall wendet euch sofort an eine Lehrkraft oder das Sekretariat. Wartet in diesem Fall nicht auf einen Streitschlichter-Termin.</aside>
+    <footer><span>Streitschlichter · Raum 008</span><span>www.realschule-germersheim.de</span></footer>
+  </article>
 
   <div id="day-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
     <div class="modal-box">
