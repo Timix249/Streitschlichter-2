@@ -1,4 +1,4 @@
-const CACHE_NAME = "streitschlichter-v4";
+const CACHE_NAME = "streitschlichter-v5";
 const APP_SHELL = ["./", "./index.html", "./style.css", "./app.js", "./i18n.js", "./firebase.js", "./manifest.json", "./peace-symbol.png"];
 
 self.addEventListener("install", (event) => {
