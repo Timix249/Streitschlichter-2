@@ -122,7 +122,9 @@ input:focus, select:focus, button:focus-visible { outline: 3px solid #9bc5b6; ou
   body.admin-page > :not(.print-info-sheet) { display: none !important; }
   .print-info-sheet { display: block; }
   .print-sheet-header { display: flex; align-items: center; gap: 15mm; padding: 8mm; margin-bottom: 7mm; border-radius: 6mm; color: white; background: #315b4f !important; print-color-adjust: exact; }
-  .print-sheet-header img { width: 25mm; height: 25mm; padding: 3mm; border-radius: 50%; background: white; object-fit: contain; }
+  .print-peace-symbol { width: 25mm; height: 25mm; padding: 3mm; border-radius: 50%; background: white; object-fit: contain; }
+  .print-qr { display: grid; justify-items: center; gap: 1mm; margin-left: auto; font-size: 8pt; font-weight: bold; }
+  .print-qr img { width: 25mm; height: 25mm; padding: 1.5mm; border-radius: 2mm; background: white; object-fit: contain; image-rendering: pixelated; }
   .print-sheet-header p, .print-sheet-header h1 { margin: 0; }
   .print-sheet-header h1 { font: bold 28pt Georgia, serif; }
   .print-info-sheet h2 { margin: 0 0 2mm; font-size: 16pt; }
